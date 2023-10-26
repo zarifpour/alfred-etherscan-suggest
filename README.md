@@ -12,7 +12,7 @@ Get in-line suggestions from [Etherscan](https://etherscan.io) via the **Keyword
 ## Installation
 
 1. Go to the [**Releases**](https://github.com/zarifpour/alfred-etherscan-suggest/releases) page for this workflow.
-2. Download the latest version of the workflow by clicking on the `etherscan.suggest.alfredworkflow`.
+2. Download the latest version of the workflow by clicking on the `Etherscan.Suggest.with.DethCode.alfredworkflow`.
 3. Double-click the file to install it in Alfred.
 4. Alfred will prompt you to add the workflow to your collection.
 
