@@ -1,10 +1,13 @@
-<img src="icon.png" alt="etherscan logo" width="96" height="96"/>
+<img src="icon.png" alt="dethcode logo" width="120" />
 
-# Etherscan Suggest
+# Etherscan Suggest (with DethCode)
 
-Get in-line suggestions from [Etherscan](https://etherscan.io) search results via the **Search Keyword** (default: `eth`). Press <kbd>↩</kbd> to open the contract's page with your default web browser — both the contract's name and its address are valid inputs.
+Get in-line suggestions from [Etherscan](https://etherscan.io) via the **Keywords** `eth` (to open in Etherscan) and `deth` (to open the contract's source code on [DethCode](https://etherscan.deth.net)). Press <kbd>↩</kbd> to proceed — both the contract's name and its address are valid inputs.
 
-![etherscan-workflow.png](/resources/etherscan-workflow.png)
+<p float="left">
+  <img src="/resources/etherscan-workflow.png" width="48%" />
+  <img src="/resources/dethcode-workflow.png" width="48%" />
+</p>
 
 ## Installation
 
@@ -13,14 +16,14 @@ Get in-line suggestions from [Etherscan](https://etherscan.io) search results vi
 3. Double-click the file to install it in Alfred.
 4. Alfred will prompt you to add the workflow to your collection.
 
-That's it! Once the workflow is installed, you can use it by typing in the **Search Keyword** (default: `eth`) followed by a project's name or its address in Alfred.
+Once installed, use `eth` to open results in Etherscan and `deth` to view a contract's source code on DethCode. Type in a project's name or its address after the keyword in Alfred.
 
-## Updating the Search Keyword
+## Updating the Search Keywords
 
 1. Go to **Alfred Preferences**.
 2. Open the **Workflows** tab.
-3. Select **Etherscan Suggest**.
-4. Click **Configure Workflow...** to set the Search Keyword.
+3. Select **Etherscan Suggest (with DethCode)**.
+4. Click **Configure Workflow...** to set or modify the **Keywords**.
 
 ## Credits
 
@@ -28,7 +31,7 @@ This workflow is inspired by the [Google Suggest](https://alfred.app/workflows/a
 
 "This workflow was adapted with the help of ChatGPT, a large language model trained by OpenAI. ChatGPT provided guidance and support during the development process."
 
-If you liked this workflow, try out my other one: [You.com Suggest](https://github.com/zarifpour/alfred-you-suggest/tree/main).
+If you enjoyed this workflow, explore my other one: [You.com Suggest](https://github.com/zarifpour/alfred-you-suggest/).
 
 ---
 
