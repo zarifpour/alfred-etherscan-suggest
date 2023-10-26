@@ -21,15 +21,28 @@
 				<false/>
 			</dict>
 		</array>
+		<key>BBFB364B-0164-4127-823F-FB71BB608C05</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>51C6A401-41A1-461F-9C42-C904FA75DC36</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>Daniel Zarifpour</string>
 	<key>description</key>
-	<string>Get in-line Etherscan search suggestions</string>
+	<string>Get in-line Etherscan suggestions and view source on DethCode.</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
-	<string>Etherscan Suggest</string>
+	<string>Etherscan Suggest (with DethCode)</string>
 	<key>objects</key>
 	<array>
 		<dict>
@@ -166,20 +179,156 @@ function run(argv) {
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>{var:code_keyword}</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Getting suggestions…</string>
+				<key>script</key>
+				<string>// Define a function to check if a string is a valid Ethereum address
+function isValidEthereumAddress(address) {
+    return /^0x[a-fA-F0-9]{40}$/.test(address);
+}
+
+// Define a function to create Alfred items from an array of suggestion objects
+function makeItems(suggestions) {
+    return suggestions.map((suggestion) =&gt; {
+        const title = suggestion.title;
+        const address = suggestion.address || title; // Default to title if no address is provided
+        return {
+            uid: title,
+            title: title,
+            subtitle: "Open “" + title + "” on DethCode",
+            arg: address,
+        };
+    });
+}
+
+// Retrieve the previous search term and suggestions from Alfred's environment variables
+const oldArg = $.NSProcessInfo.processInfo.environment.objectForKey("oldArg").js;
+const oldResults = $.NSProcessInfo.processInfo.environment.objectForKey("oldResults").js;
+
+// Define the main function that generates the list of suggestions for Alfred
+function run(argv) {
+    // If the user did not type anything, return an empty list of suggestions
+    if (!argv[0]) {
+        return JSON.stringify({ items: [] });
+    }
+
+    // If the user is currently typing, return the previous suggestions as well as the new ones from the current search
+	if (argv[0] !== oldArg) {
+    		const previousTitles = oldResults ? oldResults.split("\n").map(title =&gt; ({ title })) : [];
+    		return JSON.stringify({
+        		rerun: 0.1,
+        		skipknowledge: true,
+        		variables: { oldResults: oldResults, oldArg: argv[0] },
+        		items: makeItems(
+            		[{ title: argv[0] }].concat(previousTitles)
+        		),
+    		});
+	}
+
+	// If the user is not currently typing, make a request to the Etherscan autocomplete API to retrieve new suggestions
+	const encodedQuery = encodeURIComponent(argv[0]);
+	const queryURL = $.NSURL.URLWithString(`https://etherscan.io/searchHandler?term=${encodedQuery}&amp;filterby=0`);
+	const requestData = $.NSData.dataWithContentsOfURL(queryURL);
+	const requestString = $.NSString.alloc.initWithDataEncoding(
+    		requestData,
+    		$.NSUTF8StringEncoding
+	).js;
+	const newResults = JSON.parse(requestString).filter((result) =&gt; result.title !== argv[0]);
+
+	// If input is a valid Ethereum address and no results, add the address as a suggestion
+	if (isValidEthereumAddress(argv[0]) &amp;&amp; newResults.length === 0) {
+    		newResults.push({ title: argv[0], address: argv[0] });
+	}
+
+    // Return the new suggestions as Alfred items, and store them along with the current search term in the environment variables for later use
+    return JSON.stringify({
+        skipknowledge: true,
+        variables: { oldResults: newResults.map(result =&gt; result.title).join("\n"), oldArg: argv[0] }, // Store only the titles
+        items: makeItems(newResults),
+    });
+}</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Search Etherscan with suggestions</string>
+				<key>title</key>
+				<string>Open in DethCode</string>
+				<key>type</key>
+				<integer>7</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>BBFB364B-0164-4127-823F-FB71BB608C05</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>browser</key>
+				<string></string>
+				<key>skipqueryencode</key>
+				<false/>
+				<key>skipvarencode</key>
+				<false/>
+				<key>spaces</key>
+				<string></string>
+				<key>url</key>
+				<string>https://etherscan.deth.net/token/{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>51C6A401-41A1-461F-9C42-C904FA75DC36</string>
+			<key>version</key>
+			<integer>1</integer>
+		</dict>
 	</array>
 	<key>readme</key>
-	<string># Etherscan Suggest
+	<string># Etherscan Suggest (with DethCode)
 
-Get in-line suggestions from [Etherscan](https://etherscan.io) search results via the **Search Keyword** (default: `eth`). Press &lt;kbd&gt;↩&lt;/kbd&gt; to open the contract's page with your default web browser — both the contract's name and its address are valid inputs.
+Get in-line suggestions from [Etherscan](https://etherscan.io) via the **Keywords** `eth` (to open in Etherscan) and `deth` (to open the contract's source code on [DethCode](https://etherscan.deth.net)). Press &lt;kbd&gt;↩&lt;/kbd&gt; to proceed — both the contract's name and its address are valid inputs.
 
 ![etherscan-workflow.png](/resources/etherscan-workflow.png)
 
-## Updating the Search Keyword
+![dethcode-workflow.png](/resources/dethcode-workflow.png)
+
+## Updating the Search Keywords
 
 1. Go to **Alfred Preferences**.
 2. Open the **Workflows** tab.
-3. Select **Etherscan Suggest**.
-4. Click **Configure Workflow...** to set the Search Keyword.
+3. Select **Etherscan Suggest (with DethCode)**.
+4. Click **Configure Workflow...** to set or modify the **Keywords**.
 
 ## Credits
 
@@ -187,13 +336,20 @@ This workflow is inspired by the [Google Suggest](https://alfred.app/workflows/a
 
 "This workflow was adapted with the help of ChatGPT, a large language model trained by OpenAI. ChatGPT provided guidance and support during the development process."
 
-If you liked this workflow, try out my other one: [You.com Suggest](https://github.com/zarifpour/alfred-you-suggest/tree/main).
+If you enjoyed this workflow, explore my other one: [You.com Suggest](https://github.com/zarifpour/alfred-you-suggest/tree/main).
 
 ---
 
 Adapted with ❤️ by [Daniel Zarifpour](https://links.dev/z).</string>
 	<key>uidata</key>
 	<dict>
+		<key>51C6A401-41A1-461F-9C42-C904FA75DC36</key>
+		<dict>
+			<key>xpos</key>
+			<real>310</real>
+			<key>ypos</key>
+			<real>375</real>
+		</dict>
 		<key>882A5947-06A0-49ED-8443-D55F88AEF74A</key>
 		<dict>
 			<key>xpos</key>
@@ -207,6 +363,13 @@ Adapted with ❤️ by [Daniel Zarifpour](https://links.dev/z).</string>
 			<real>125</real>
 			<key>ypos</key>
 			<real>230</real>
+		</dict>
+		<key>BBFB364B-0164-4127-823F-FB71BB608C05</key>
+		<dict>
+			<key>xpos</key>
+			<real>125</real>
+			<key>ypos</key>
+			<real>375</real>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
@@ -226,17 +389,36 @@ Adapted with ❤️ by [Daniel Zarifpour](https://links.dev/z).</string>
 			<key>description</key>
 			<string>Key to start Etherscan suggestions</string>
 			<key>label</key>
-			<string>Search Keyword</string>
+			<string>Search keyword</string>
 			<key>type</key>
 			<string>textfield</string>
 			<key>variable</key>
 			<string>search_keyword</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>deth</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Key to open code on DethCode</string>
+			<key>label</key>
+			<string>Code keyword</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>code_keyword</string>
+		</dict>
 	</array>
-	<key>variablesdontexport</key>
-	<array/>
 	<key>version</key>
-	<string>1.0.0</string>
+	<string>1.1.0</string>
 	<key>webaddress</key>
 	<string>https://links.dev/z</string>
 </dict>
