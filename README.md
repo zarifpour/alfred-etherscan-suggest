@@ -4,6 +4,10 @@
 
 Get in-line suggestions from [Etherscan](https://etherscan.io) via the **Keywords** `eth` (to open in Etherscan) and `deth` (to open the contract's source code on [DethCode](https://etherscan.deth.net)). Press <kbd>↩</kbd> to proceed — both the contract's name and its address are valid inputs.
 
+<p align="center">
+  <img src="/resources/demo-workflow.gif" alt="workflow-demo">
+</p>
+
 <p float="left">
   <img src="/resources/etherscan-workflow.png" width="48%" />
   <img src="/resources/dethcode-workflow.png" width="48%" />
