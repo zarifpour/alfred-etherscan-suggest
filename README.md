@@ -39,4 +39,4 @@ If you enjoyed this workflow, explore my other one: [You.com Suggest](https://gi
 
 ---
 
-Adapted with ❤️ by [Daniel Zarifpour](https://links.dev/z).
+Adapted with 💜 by [Daniel Zarifpour](https://links.dev/z).
